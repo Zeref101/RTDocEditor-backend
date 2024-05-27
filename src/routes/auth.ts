@@ -20,8 +20,8 @@ router.post("/signUp", async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const user = await User.create({
-      email,
-      username,
+      email: email,
+      username: username,
       password: hashedPassword,
     });
 
@@ -51,10 +51,12 @@ router.post("/signIn", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const session = new Session({ userId: user._id });
+    const session = new Session({
+      user: user._id,
+    });
     await session.save();
 
-    res.status(200).json({ message: "User signed in successfully", session });
+    res.status(200).send({ session });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ message: error.message });
