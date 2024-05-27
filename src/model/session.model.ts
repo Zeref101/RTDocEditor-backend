@@ -2,7 +2,6 @@ import mongoose, { Schema, model, models } from "mongoose";
 
 const sessionSchema = new Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  sessionId: { type: String, required: true },
   expiresAt: {
     type: Date,
     required: true,
