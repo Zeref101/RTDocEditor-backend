@@ -1,6 +1,9 @@
 import { Router, Response, Request } from "express";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import User from "../model/User.model";
+import Session from "../model/session.model";
+import { connectToDB } from "../db";
 
 const router = Router();
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
@@ -19,8 +22,30 @@ passport.use(
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:8000/auth/google/callback",
     },
-    function (accessToken, refreshToken, profile, cb) {
-      return cb(null, profile);
+    async function (accessToken, refreshToken, profile, cb) {
+      try {
+        connectToDB();
+        let user = await User.findOne({
+          email: profile.emails ? profile.emails[0].value : "",
+        });
+
+        if (!user) {
+          user = await User.create({
+            username: profile.name?.givenName,
+            email: profile.emails ? profile.emails[0].value : "",
+            avatar: profile.photos ? profile.photos[0].value : "",
+            googleAuth: true,
+          });
+        }
+
+        await Session.create({
+          user: user._id,
+        });
+
+        return cb(null, user);
+      } catch (error) {
+        return cb(error);
+      }
     }
   )
 );
