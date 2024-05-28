@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import session from "express-session";
+import session, { Store } from "express-session";
 import passport from "passport";
+import MongoStore from "connect-mongo";
+
 require("dotenv").config();
 
 const app = express();
+
 const port = process.env.PORT;
 const corsOptions = {
   origin: "*",
@@ -17,6 +20,13 @@ app.use(
     secret: "secrethaibhai",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URL,
+      collectionName: "GoogleSession",
+    }),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000 * 7,
+    },
   })
 );
 
