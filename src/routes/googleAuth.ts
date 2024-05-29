@@ -4,6 +4,28 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../model/User.model";
 import Session from "../model/session.model";
 import { connectToDB } from "../db";
+import { ObjectId } from "mongodb";
+
+interface Session {
+  user: ObjectId;
+  _id: ObjectId;
+  expiresAt: Date;
+  __v: number;
+}
+
+interface User {
+  username: string;
+  email: string;
+  avatar: string;
+  googleAuth: boolean;
+  _id: ObjectId;
+  __v: number;
+}
+
+interface ReqUser {
+  user: User;
+  session: Session;
+}
 
 const router = Router();
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
@@ -38,11 +60,11 @@ passport.use(
           });
         }
 
-        await Session.create({
+        const session = await Session.create({
           user: user._id,
         });
 
-        return cb(null, user);
+        return cb(null, { user, session });
       } catch (error) {
         return cb(error);
       }
@@ -65,10 +87,31 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/signIn",
+    failureRedirect: "http://localhost:3000/signUp",
   }),
-  function (req, res) {
-    console.log(req.user);
+  function (req: Request, res: Response) {
+    if (!req.user) {
+      console.error("User information is not available in the request.");
+      res.redirect("http://localhost:3000/signUp");
+      return;
+    }
+
+    const user = req.user as ReqUser;
+    const sessionCookie = user.session;
+
+    if (!sessionCookie) {
+      console.error("Session information is not available in the user object.");
+      res.redirect("http://localhost:3000/signUp");
+      return;
+    }
+
+    if (!sessionCookie._id) {
+      console.error("Session ID is not available in the session object.");
+      res.redirect("http://localhost:3000/signUp");
+      return;
+    }
+
+    res.cookie("pookie", `${JSON.stringify(sessionCookie._id)}`);
     res.redirect("http://localhost:3000/");
   }
 );
