@@ -3,7 +3,7 @@ import { connectToDB } from "../db";
 import User from "../model/User.model";
 import bcrypt from "bcrypt";
 import Session from "../model/session.model";
-
+import { SessionCookie } from "./googleAuth";
 const router = Router();
 
 router.post("/signUp", async (req: Request, res: Response) => {
@@ -12,7 +12,7 @@ router.post("/signUp", async (req: Request, res: Response) => {
 
     const { email, username, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -41,27 +41,30 @@ router.post("/signIn", async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const session = new Session({
+    const session: SessionCookie = await Session.create({
       user: user._id,
     });
-    await session.save();
+    res.cookie("pookie", `${JSON.stringify(session._id)}`);
 
-    res.status(200).send({ session });
+    return res.status(200).end();
+
+    // return res.cookie("pookie", `${JSON.stringify(session._id)}`);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     } else {
-      res.status(500).json({ message: "An unknown error occurred" });
+      return res.status(500).json({ message: "An unknown error occurred" });
     }
   }
 });
