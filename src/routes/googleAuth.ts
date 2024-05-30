@@ -6,14 +6,14 @@ import Session from "../model/session.model";
 import { connectToDB } from "../db";
 import { ObjectId } from "mongodb";
 
-interface Session {
+export interface SessionCookie {
   user: ObjectId;
   _id: ObjectId;
   expiresAt: Date;
   __v: number;
 }
 
-interface User {
+export interface User {
   username: string;
   email: string;
   avatar: string;
@@ -22,9 +22,9 @@ interface User {
   __v: number;
 }
 
-interface ReqUser {
+export interface ReqUser {
   user: User;
-  session: Session;
+  session: SessionCookie;
 }
 
 const router = Router();
