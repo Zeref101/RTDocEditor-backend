@@ -1,5 +1,5 @@
 import { Router, Response, Request } from "express";
-import passport from "passport";
+import passport, { session } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../model/User.model";
 import Session from "../model/session.model";
@@ -98,6 +98,7 @@ router.get(
 
     const user = req.user as ReqUser;
     const sessionCookie = user.session;
+    console.log(sessionCookie);
 
     if (!sessionCookie) {
       console.error("Session information is not available in the user object.");
@@ -110,8 +111,7 @@ router.get(
       res.redirect("http://localhost:3000/signUp");
       return;
     }
-
-    res.cookie("pookie", `${JSON.stringify(sessionCookie._id)}`);
+    res.cookie("pookie", sessionCookie._id.toString());
     res.redirect("http://localhost:3000/");
   }
 );
