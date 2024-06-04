@@ -111,7 +111,7 @@ router.get(
       res.redirect("http://localhost:3000/signUp");
       return;
     }
-    res.cookie("pookie", sessionCookie._id.toString());
+    res.cookie("pookie", sessionCookie._id.toString(), { maxAge: 604800000 });
     res.redirect("http://localhost:3000/");
   }
 );
