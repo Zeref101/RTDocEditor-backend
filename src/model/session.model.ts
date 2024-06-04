@@ -7,9 +7,10 @@ const sessionSchema = new Schema({
     required: true,
     default: () => {
       const date = new Date();
-      date.setDate(date.getDate() + 1);
+      date.setDate(date.getDate() + 7);
       return date;
     },
+    expires: 604800,
   },
 });
 
