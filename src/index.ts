@@ -39,12 +39,16 @@ app.options("*", cors(corsOptions));
 
 const userAuthRoutes = require("./routes/auth.ts");
 const userGoogleAuth = require("./routes/googleAuth.ts");
+const docRoute = require("./routes/document.ts");
+const sessionRoute = require("./routes/session.ts");
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 app.use("/api/auth/", userAuthRoutes);
 app.use("/", userGoogleAuth);
+app.use("/api/", docRoute);
+app.use("/api/", sessionRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
