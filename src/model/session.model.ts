@@ -14,5 +14,5 @@ const sessionSchema = new Schema({
   },
 });
 
-const Session = models.Session || model("Session", sessionSchema);
+const Session = models.UserSession || model("UserSession", sessionSchema);
 export default Session;
