@@ -1,12 +1,17 @@
 import express from "express";
-import Session from "../model/session.model";
+import UserSession from "../model/session.model";
 
 const router = express.Router();
 
 router.get("/sessions/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const session = await Session.findById(id).populate("user");
+    const session = await UserSession.findById(id).populate("user");
+    if (!session) {
+      console.log("No session found");
+    } else {
+      console.log(session);
+    }
     if (!session) return res.status(404).send("Session not found");
     res.send(session);
   } catch (error) {
