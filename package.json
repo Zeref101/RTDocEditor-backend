@@ -10,8 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dicebear/collection": "^8.0.1",
-    "@dicebear/core": "^8.0.1",
     "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
@@ -20,7 +18,8 @@
     "mongodb": "^6.6.2",
     "mongoose": "^8.4.0",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -32,6 +31,7 @@
     "@types/node": "^20.12.12",
     "@types/passport": "^1.0.16",
     "@types/passport-google-oauth20": "^2.0.16",
+    "@types/ws": "^8.5.10",
     "dotenv": "^16.4.5",
     "nodemon": "^3.1.1",
     "ts-node": "^10.9.2",
