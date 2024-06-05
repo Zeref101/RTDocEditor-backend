@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { connectToDB } from "../db";
 import User from "../model/User.model";
 import bcrypt from "bcrypt";
-import Session from "../model/session.model";
+import UserSession from "../model/session.model";
 import { SessionCookie } from "./googleAuth";
 const router = Router();
 
@@ -52,7 +52,7 @@ router.post("/signIn", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const session: SessionCookie = await Session.create({
+    const session: SessionCookie = await UserSession.create({
       user: user._id,
     });
     res.cookie("pookie", `${JSON.stringify(session._id)}`);
