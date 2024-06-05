@@ -4,12 +4,12 @@ import { connectToDB } from "../db";
 
 const router = express.Router();
 
-// GET /documents/:id
-router.get("/documents/:id", async (req: Request, res: Response) => {
-  const document = await Document.findById(req.params.id);
-  if (!document) return res.status(404).send("Document not found");
-  res.send(document);
-});
+// // GET /documents/:id
+// router.get("/documents/:id", async (req: Request, res: Response) => {
+//   const document = await Document.findById(req.params.id);
+//   if (!document) return res.status(404).send("Document not found");
+//   res.send(document);
+// });
 
 // POST /documents
 router.post("/documents", async (req: Request, res: Response) => {
@@ -74,10 +74,11 @@ router.put("/document/:docId", async (req, res) => {
     res.status(500).json({ message: "Error updating document", error });
   }
 });
-router.get("/documents", async (req, res) => {
+router.get("/documents/:userId", async (req, res) => {
   try {
     connectToDB();
-    const documents = await Document.find({}, "_id title");
+    const userId = req.params.userId;
+    const documents = await Document.find({ owner: userId }, "_id title");
     res.json(documents.map((doc) => ({ id: doc._id, title: doc.title })));
   } catch (error) {
     res.status(500).json({ message: "Error getting documents", error });
