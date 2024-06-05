@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT;
 const corsOptions = {
   origin: ["http://localhost:3000"],
+  mode: "no-cors",
   methods: "GET, POST, PATCH, PUT, HEAD, DELETE",
   credential: true,
 };
@@ -41,6 +42,7 @@ const userAuthRoutes = require("./routes/auth.ts");
 const userGoogleAuth = require("./routes/googleAuth.ts");
 const docRoute = require("./routes/document.ts");
 const sessionRoute = require("./routes/session.ts");
+const savedDocRoute = require("./routes/savedDocuments");
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
@@ -49,6 +51,7 @@ app.use("/api/auth/", userAuthRoutes);
 app.use("/", userGoogleAuth);
 app.use("/api/", docRoute);
 app.use("/api/", sessionRoute);
+app.use("/api/", savedDocRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
