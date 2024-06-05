@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import passport, { session } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../model/User.model";
-import Session from "../model/session.model";
+import UserSession from "../model/session.model";
 import { connectToDB } from "../db";
 import { ObjectId } from "mongodb";
 
@@ -60,7 +60,7 @@ passport.use(
           });
         }
 
-        const session = await Session.create({
+        const session = await UserSession.create({
           user: user._id,
         });
 
