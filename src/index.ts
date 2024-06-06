@@ -43,6 +43,7 @@ const userGoogleAuth = require("./routes/googleAuth.ts");
 const docRoute = require("./routes/document.ts");
 const sessionRoute = require("./routes/session.ts");
 const savedDocRoute = require("./routes/savedDocuments");
+const collabDocRoute = require("./routes/collab_doc.ts");
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
@@ -52,6 +53,7 @@ app.use("/", userGoogleAuth);
 app.use("/api/", docRoute);
 app.use("/api/", sessionRoute);
 app.use("/api/", savedDocRoute);
+app.use("/api/", collabDocRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
