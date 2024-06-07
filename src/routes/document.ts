@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import Document from "../model/Document.model";
 import { connectToDB } from "../db";
+import CollaboratedDoc from "../model/CollaborateDocs.model";
 
 const router = express.Router();
 
@@ -22,6 +23,12 @@ router.post("/documents", async (req: Request, res: Response) => {
       lastModified: new Date(),
     });
     await document.save();
+    const collaboration = new CollaboratedDoc({
+      documentId: document._id,
+      userId: [req.body.owner],
+    });
+    await collaboration.save();
+
     res.status(201).send(document);
   } catch (error) {
     console.error(error);
@@ -49,9 +56,14 @@ router.put("/documents/:id", async (req: Request, res: Response) => {
 
 // DELETE /documents/:id
 router.delete("/documents/:id", async (req: Request, res: Response) => {
-  const document = await Document.findByIdAndDelete(req.params.id);
-  if (!document) return res.status(404).send("Document not found");
-  res.send(document);
+  try {
+    connectToDB();
+    const document = await Document.findByIdAndDelete(req.params.id);
+    if (!document) return res.status(404).send("Document not found");
+    res.send(document);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 // UPDATE TITLE
