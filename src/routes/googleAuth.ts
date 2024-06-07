@@ -5,6 +5,7 @@ import User from "../model/User.model";
 import UserSession from "../model/session.model";
 import { connectToDB } from "../db";
 import { ObjectId } from "mongodb";
+import Document from "../model/Document.model";
 
 export interface SessionCookie {
   user: ObjectId;
@@ -58,6 +59,16 @@ passport.use(
             avatar: profile.photos ? profile.photos[0].value : "",
             googleAuth: true,
           });
+
+          const personalDocument = await Document.create({
+            content: "",
+            title: "Personal",
+            owner: user._id,
+            lastModified: new Date(),
+          });
+
+          user.personal = personalDocument._id;
+          await user.save();
         }
 
         const session = await UserSession.create({
