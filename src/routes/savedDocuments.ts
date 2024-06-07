@@ -62,4 +62,19 @@ router.post("/removeDocument/:userId/:docId", async (req, res) => {
   }
 });
 
+router.get("/savedDocuments/:userId", async (req, res) => {
+  try {
+    connectToDB();
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate({
+      path: "savedDocuments",
+      select: "_id title",
+    });
+
+    res.status(200).json(user.savedDocuments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 module.exports = router;
