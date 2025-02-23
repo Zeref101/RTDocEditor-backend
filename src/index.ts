@@ -3,6 +3,7 @@ import cors from "cors";
 import session, { Store } from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
+import { connectToDB } from "./db";
 
 require("dotenv").config();
 
@@ -54,7 +55,7 @@ app.use("/api/", docRoute);
 app.use("/api/", sessionRoute);
 app.use("/api/", savedDocRoute);
 app.use("/api/", collabDocRoute);
-
+connectToDB();
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
